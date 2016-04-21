@@ -1,0 +1,37 @@
+plugins {
+  id 'java'
+  id 'maven'
+  id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    url "http://oss.sonatype.org/content/groups/public/"
+  }
+}
+
+
+
+dependencies {
+  testCompile group: 'junit', name: 'junit', version: '4.12'
+
+  compile (
+    "org.bouncycastle:bcprov-debug-jdk15on:1.53",
+    "org.threadly:threadly:4.5.0",
+//    "org.threadly:litesockets:3.1.0-SNAPSHOT"
+    files(
+      "./litesockets-3.1.0-SNAPSHOT.jar"
+    )
+  )
+}
+
+
+
+jar {
+  manifest {
+    attributes(
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+    )
+  }
+}
