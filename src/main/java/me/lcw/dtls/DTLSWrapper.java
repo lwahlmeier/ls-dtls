@@ -187,12 +187,10 @@ public class DTLSWrapper {
     public void onRead(Client client) {
       MergedByteBuffers mbb = client.getRead();
       if(!encryptionStarted.get()) {
-        if( bufferReader != null) {
-          bufferReader.onData(mbb.pull(mbb.remaining()));
-        }
+        bufferFilter.filterBuffer(mbb.pull(mbb.remaining()));
       } else {
         if(!handShakeFuture.isDone()) {
-          ldt.addData(mbb.pull(mbb.remaining()));
+          ldt.addData(bufferFilter.filterBuffer(mbb.pull(mbb.remaining())));
         } else {
           final ByteBuffer ogbb = DEFAULT_BUFFER_FILTER.filterBuffer(bufferFilter.filterBuffer(mbb.pull(mbb.remaining())));
           if(ogbb != null && ogbb.hasRemaining()) {
